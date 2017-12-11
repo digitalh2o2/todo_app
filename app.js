@@ -9,6 +9,7 @@ const _ = require('lodash');
 
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
+var {authenticate} = require('./middleware/authenticate');
 var {ObjectID} = require('mongodb');
 var {mongoose} = require('./db/mongoose');
 HandlebarsIntl.registerWith(hbs);
@@ -144,6 +145,10 @@ app.get('/users', (req, res) => {
     }).catch((e) => {
       res.status(400).send('An error has occurred!')
     });
+});
+
+app.get('/users/me', authenticate, (req, res) => {
+  res.send(req.user);
 });
 
 app.listen(port, () => {
