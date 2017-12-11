@@ -28,7 +28,8 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-app.get('/', (req, res) => {
+app.get('/', authenticate,(req, res) => {
+
   res.render('index.hbs');
 });
 
@@ -139,20 +140,21 @@ app.post('/user/complete', (req, res) => {
     .then(() => {
       return user.generateAuthToken();
     }).then((token) => {
-      res.header('x-auth', token).send(user)
+      res.header('x-auth', token).render('index.hbs')
     }).catch((e) => {
       res.status(400).send(e)
     });
 
 });
 
-app.get('/users', (req, res) => {
-  User.find({})
-    .then((users) => {
-      res.render('users.hbs', {users})
-    }).catch((e) => {
-      res.status(400).send('An error has occurred!')
-    });
+app.get('/user/new', (req, res) => {
+  res.render('new_user.hbs')
+  // User.find({})
+  //   .then((users) => {
+  //     res.render('new_user.hbs', {users})
+  //   }).catch((e) => {
+  //     res.status(400).send('An error has occurred!')
+  //   });
 });
 
 app.get('/users/me', authenticate, (req, res) => {

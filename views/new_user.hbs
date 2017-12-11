@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="/css/bulma.css">
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <title>Users</title>
+  </head>
+  <body>
+    {{> nav }}
+    <section class="section">
+      <div class="container columns">
+        <div class="column is-4 is-offset-4">
+          <h3 class="subtitle">Create A New User</h3>
+          <div class="field">
+            <form action="/user/complete" method="post">
+              <label for="email">Email</label><br>
+              <input class="input" type="text" name="email" placeholder="Enter Email">
+              <br>
+              <label for="password">Enter password</label><br>
+              <input class="input" type="password" name="password" placeholder="Enter Password">
+              <br>
+              <br><button class="button is-primary" type="submit">Submit</button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </body>
+</html>

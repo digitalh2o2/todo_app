@@ -3,8 +3,14 @@
     <a class="subtitle" href="/">
       Home
     </a>
-    <a class="subtitle" href="/todos">
+    {{#if user}}
+    <a class="navbar-end subtitle" href="/todos">
       All Todos
     </a>
+    {{else}}
+    <a class="navbar-end subtitle" href="/user/new">
+      Log In
+    </a>
+    {{/if}}
   </div>
 </nav>
