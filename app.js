@@ -1,3 +1,5 @@
+require('./server/config.js');
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const moment = require('moment');
@@ -30,8 +32,10 @@ app.get('/', (req, res) => {
   res.render('index.hbs');
 });
 
-app.get('/todos', (req, res) => {
-  Todo.find({})
+app.get('/todos', authenticate, (req, res) => {
+  Todo.find({
+    _author: req.user._id
+  })
     .then((todos) => {
       res.render('todos.hbs', {todos});
     }).catch((e) => {
@@ -39,29 +43,31 @@ app.get('/todos', (req, res) => {
     });
 });
 
-app.post('/todos', (req, res) => {
+app.post('/todos', authenticate, (req, res) => {
   var myTodo = new Todo({
     title: req.body.title,
-    todoinfo: req.body.todoinfo
+    todoinfo: req.body.todoinfo,
+    _author: req.user._id
   });
 
   myTodo.save()
     .then((todo) => {
       res.redirect('/');
     }).catch((e) => {
-      res.status(400).send('Unable to save to database');
+      res.status(400).send(e);
     });
 });
 
-app.get('/todos/:id', (req, res) => {
+app.get('/todos/:id', authenticate, (req, res) => {
   var id = req.params.id;
 
   if(!ObjectID.isValid(id)){
     return res.status(404).send();
   }
 
-  Todo.findById({
-    _id: id
+  Todo.findOne({
+    _id: id,
+    _author: req.user._id
     })
     .then((todo) => {
       res.render('todo.hbs', {todo});
@@ -87,15 +93,16 @@ app.get('/todo/:id/update', (req, res) => {
     })
 });
 
-app.delete('/todos/:id/delete', (req, res) => {
+app.delete('/todos/:id/delete', authenticate, (req, res) => {
   var id = req.params.id;
 
   if(!ObjectID.isValid(id)){
     return res.status(404).send();
   }
 
-  Todo.findByIdAndRemove({
-    _id: id
+  Todo.findOneAndRemove({
+    _id: id,
+    _author: req.user._id
   })
     .then((todo) => {
       res.send('Todo removed.')
@@ -104,13 +111,14 @@ app.delete('/todos/:id/delete', (req, res) => {
     });
 });
 
-app.put('/todos/:id', (req, res) => {
+app.put('/todos/:id', authenticate, (req, res) => {
   var id = req.params.id
   var body = _.pick(req.body, ['title', 'todoinfo'])
   console.log(body)
 
   Todo.findOneAndUpdate({
-    _id: id
+    _id: id,
+    _author: req.user._id
   }, {$set: body}, {new: true})
     .then((todo) => {
       if(!todo){

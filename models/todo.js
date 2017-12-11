@@ -17,6 +17,10 @@ var TodoSchema = new mongoose.Schema({
   created: {
     type: Date,
     default: Date.now
+  },
+  _author: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true    
   }
 
 });
