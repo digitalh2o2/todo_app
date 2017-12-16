@@ -25,11 +25,11 @@
             <h3 class="title input" id="title"contenteditable="true">{{todo.title}}</h3>
             <label class="label" for="todoinfo">Information</label>
             <textarea class="textarea" id="info" contenteditable="true">{{todo.todoinfo}}</textarea>
+            <input type="hidden" id="author" name="_author" value="{{todo._author}}">
             <br>
-            <button type="button" class="updateTodo button is-warning" id="{{todo.id}}">Update</button>
+            <button type="button" class="updateTodo button is-warning"  id="{{todo.id}}">Update</button>
           </div>
         </div>
-
       </div>
     </section>
     <script type="text/javascript" src="/assets/update.js"></script>

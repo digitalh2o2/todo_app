@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="/css/bulma.css">
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <title>Create Your Todos</title>
+  </head>
+  <body>
+    {{> nav }}
+    <section class="hero is-primary has-text-centered">
+      <div class="container">
+        <h1 class="title">
+          Create New Todo
+        </h1>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container columns">
+        <div class="column is-4 is-offset-4">
+          <h3 class="subtitle">Create Your Todo Below</h3>
+          <div class="field">
+            <form action="/todos" method="post">
+              <label for="title">Title</label><br>
+              <input class="input" type="text" name="title" placeholder="Enter Title">
+              <br>
+              <label for="todo_information">Todo Information</label><br>
+              <textarea class="textarea" name="todoinfo" placeholder="Please enter your todo"></textarea><br>
+              <button class="button is-primary" type="submit">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

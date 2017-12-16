@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="/css/bulma.css">
     <link rel="stylesheet" type="text/css" href="/css/main.css">
-    <title>Create Your Todos</title>
+    <title>Your Profile</title>
   </head>
   <body>
     {{> nav }}
@@ -19,9 +19,10 @@
 
     <section class="section">
       <div class="container button-field">
-        <h3 class="subtitle">
-          Please sign in or log in to start creating to-dos!
-        </h3>
+        <div class="field">
+          <h3 class="subtitle">Your Profile</h3>
+          {{user.email}}
+        </div>
       </div>
     </section>
   </body>

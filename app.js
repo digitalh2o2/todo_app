@@ -1,13 +1,19 @@
 require('./server/config.js');
+require('./server/passport.js');
 
 const express = require('express');
+const flash = require('connect-flash')
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const moment = require('moment');
 const hbs = require('hbs');
 const app = express();
+var passport = require('passport')
+LocalStrategy = require('passport-local').Strategy;
 var Handlebars     = require('handlebars');
 var HandlebarsIntl = require('handlebars-intl');
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
@@ -22,18 +28,31 @@ hbs.registerPartials(__dirname + '/views/partials');
 app.set('view engine', 'hbs');
 app.use(express.static(__dirname + '/public'));
 app.use('/css', express.static(__dirname + '/node_modules/bulma/css/'));
-
 app.use(bodyParser.json());
+app.use(session({
+  secret: process.env.JWT_SECRET,
+  resave: true,
+  saveUninitialized: false
+}));
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
 
-app.get('/', authenticate,(req, res) => {
-
-  res.render('index.hbs');
+app.get('/',(req, res) => {
+  res.render('index.hbs', {user: req.user});
 });
 
-app.get('/todos', authenticate, (req, res) => {
+app.get('/todos/create',
+  require('connect-ensure-login').ensureLoggedIn(),(req, res) => {
+  res.render('new_todo.hbs', {user: req.user});
+});
+
+app.get('/todos',
+require('connect-ensure-login').ensureLoggedIn(),
+(req, res) => {
   Todo.find({
     _author: req.user._id
   })
@@ -44,7 +63,14 @@ app.get('/todos', authenticate, (req, res) => {
     });
 });
 
-app.post('/todos', authenticate, (req, res) => {
+app.get('/user/profile',
+require('connect-ensure-login').ensureLoggedIn(),
+(req, res) => {
+  res.render('profile.hbs', {user: req.user})
+})
+
+app.post('/todos',
+require('connect-ensure-login').ensureLoggedIn(),(req, res) => {
   var myTodo = new Todo({
     title: req.body.title,
     todoinfo: req.body.todoinfo,
@@ -53,13 +79,14 @@ app.post('/todos', authenticate, (req, res) => {
 
   myTodo.save()
     .then((todo) => {
-      res.redirect('/');
+      res.redirect('/todos');
     }).catch((e) => {
       res.status(400).send(e);
     });
 });
 
-app.get('/todos/:id', authenticate, (req, res) => {
+app.get('/todos/:id',
+  require('connect-ensure-login').ensureLoggedIn(),(req, res) => {
   var id = req.params.id;
 
   if(!ObjectID.isValid(id)){
@@ -77,7 +104,8 @@ app.get('/todos/:id', authenticate, (req, res) => {
     });
 });
 
-app.get('/todo/:id/update', (req, res) => {
+app.get('/todo/:id/update',
+  require('connect-ensure-login').ensureLoggedIn(),(req, res) => {
   var id = req.params.id;
 
   if(!ObjectID.isValid(id)){
@@ -94,7 +122,7 @@ app.get('/todo/:id/update', (req, res) => {
     })
 });
 
-app.delete('/todos/:id/delete', authenticate, (req, res) => {
+app.delete('/todos/:id/delete',(req, res) => {
   var id = req.params.id;
 
   if(!ObjectID.isValid(id)){
@@ -102,8 +130,7 @@ app.delete('/todos/:id/delete', authenticate, (req, res) => {
   }
 
   Todo.findOneAndRemove({
-    _id: id,
-    _author: req.user._id
+    _id: id
   })
     .then((todo) => {
       res.send('Todo removed.')
@@ -112,14 +139,12 @@ app.delete('/todos/:id/delete', authenticate, (req, res) => {
     });
 });
 
-app.put('/todos/:id', authenticate, (req, res) => {
+app.put('/todos/:id',(req, res) => {
   var id = req.params.id
   var body = _.pick(req.body, ['title', 'todoinfo'])
-  console.log(body)
 
   Todo.findOneAndUpdate({
     _id: id,
-    _author: req.user._id
   }, {$set: body}, {new: true})
     .then((todo) => {
       if(!todo){
@@ -138,9 +163,7 @@ app.post('/user/complete', (req, res) => {
 
   user.save()
     .then(() => {
-      return user.generateAuthToken();
-    }).then((token) => {
-      res.header('x-auth', token).render('index.hbs')
+      res.redirect('/users/login');
     }).catch((e) => {
       res.status(400).send(e)
     });
@@ -149,40 +172,25 @@ app.post('/user/complete', (req, res) => {
 
 app.get('/user/new', (req, res) => {
   res.render('new_user.hbs')
-  // User.find({})
-  //   .then((users) => {
-  //     res.render('new_user.hbs', {users})
-  //   }).catch((e) => {
-  //     res.status(400).send('An error has occurred!')
-  //   });
 });
 
-app.get('/users/me', authenticate, (req, res) => {
-  res.send(req.user);
-});
+app.get('/users/login', (req, res) => {
+  res.render('login.hbs')
+})
 
-app.post('/users/login', (req, res) => {
-  var body = _.pick(req.body, ['email', 'password']);
+app.get('/logout', (req, res) => {
+  req.logout();
+  res.redirect('/');
+})
 
-  User.findByCredentials(body.email, body.password)
-    .then((user) => {
-      return user.generateAuthToken()
-    .then((token) => {
-      res.header('x-auth', token).send(user)
-    });
-  }).catch((e) => {
-      res.status(400).send();
-    });
-});
-
-app.delete('/users/me/token', authenticate, (req, res) => {
-  req.user.removeToken(req.token)
-    .then(() => {
-      res.status(200).send();
-    }, () => {
-      res.status(400).send();
-    });
-});
+app.post('/users/login', passport.authenticate('local',
+  {
+    failureRedirect: '/users/login',
+    failureFlash: true
+  }), function(req, res) {
+    res.redirect('/todos')
+  }
+);
 
 app.listen(port, () => {
   console.log(`Successfully listening on port ${port}`)

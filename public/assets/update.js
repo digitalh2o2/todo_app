@@ -1,5 +1,3 @@
-console.log("hello");
-
 let title = document.querySelector('#title');
 let info = document.querySelector('#info');
 let button = document.querySelector(".updateTodo");
