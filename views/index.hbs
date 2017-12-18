@@ -3,12 +3,14 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="/css/bulma.css">
     <link rel="stylesheet" type="text/css" href="/css/main.css">
-    <title>Create Your Todos</title>
+    <title>Todo App</title>
   </head>
-  <body>
+  <body class="site">
     {{> nav }}
+
     <section class="hero is-primary has-text-centered">
       <div class="container">
         <h1 class="title">
@@ -17,12 +19,15 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section site-content">
       <div class="container button-field">
         <h3 class="subtitle">
           Please sign in or log in to start creating to-dos!
         </h3>
       </div>
     </section>
+
+    {{> footer }}
+
   </body>
 </html>

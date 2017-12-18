@@ -5,15 +5,16 @@ const express = require('express');
 const flash = require('connect-flash')
 const session = require('express-session');
 const bodyParser = require('body-parser');
-const moment = require('moment');
+
 const hbs = require('hbs');
 const app = express();
+const _ = require('lodash');
 var passport = require('passport')
 LocalStrategy = require('passport-local').Strategy;
-var Handlebars     = require('handlebars');
+
 var HandlebarsIntl = require('handlebars-intl');
-const _ = require('lodash');
-const bcrypt = require('bcryptjs');
+var helpers = require('handlebars-helpers')();
+
 
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
@@ -21,6 +22,7 @@ var {authenticate} = require('./middleware/authenticate');
 var {ObjectID} = require('mongodb');
 var {mongoose} = require('./db/mongoose');
 HandlebarsIntl.registerWith(hbs);
+hbs.registerHelper(helpers);
 
 const port = process.env.PORT || 3000;
 

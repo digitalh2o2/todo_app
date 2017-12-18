@@ -3,13 +3,16 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="/css/bulma.css">
     <link rel="stylesheet" type="text/css" href="/css/main.css">
-    <title>Create Your Todos</title>
+    <title>New Todo</title>
   </head>
-  <body>
+  <body class="site">
+
     {{> nav }}
-    <section class="hero is-primary has-text-centered">
+
+    <section class="hero site-content is-primary has-text-centered">
       <div class="container">
         <h1 class="title">
           Create New Todo
@@ -17,9 +20,9 @@
       </div>
     </section>
 
-    <section class="section">
-      <div class="container columns">
-        <div class="column is-4 is-offset-4">
+    <section class="section site-content">
+      <div class="container button-field">
+        <div class="field">
           <h3 class="subtitle">Create Your Todo Below</h3>
           <div class="field">
             <form action="/todos" method="post">
@@ -34,5 +37,8 @@
         </div>
       </div>
     </section>
+
+    {{> footer }}
+
   </body>
 </html>

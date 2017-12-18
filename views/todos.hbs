@@ -3,46 +3,56 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="/css/bulma.css">
     <link rel="stylesheet" type="text/css" href="/css/main.css">
     <title>Todos</title>
   </head>
-  <body>
-    {{> nav2 }}
-    <section class="hero is-primary has-text-centered">
+  <body class="site">
+
+    {{> nav }}
+
+    <section class="hero site-content is-primary has-text-centered">
       <div class="container">
         <h1 class="title">
           Todos Page
         </h1>
       </div>
     </section>
+
     <br>
-    <section>
+
+    <section class=site-content>
       <div class="container button-field">
         <a class="button is-primary" href="/todos/create">Create New Todo</a>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section site-content">
       <div class="container">
         <div class="columns">
           <div class="column is-4 is-offset-4">
-
             {{#each todos}}
-              <ul>
-                <label class="label" for="title">Title</label>
-                <li class="title">{{this.title}}</li>
-                <label class="label" for="todoinfo">Todo Information</label>
-                <li class="subtitle">{{this.todoinfo}}</li>
-                <li>Date Created: {{formatDate this.created}}</li>
-                <li>{{formatRelative this.created}}</li>
-                <a class="button is-info" href="/todos/{{this.id}}" onclick="console.log(`{{this.id}}`)">View Todo</a>
-              </ul>
+              <div class="card">
+                <div class="card-content">
+                  <label class="label" for="title">Title</label>
+                  <p class="title">{{this.title}}</p>
+                  <label class="label" for="todoinfo">Todo Information</label>
+                  <p class="subtitle">{{this.todoinfo}}</p>
+                  <p>Date Created: {{formatDate this.created}}</p>
+                  <p>{{formatRelative this.created}}</p>
+                </div>
+
+                <a class="button is-info button-field" href="/todos/{{this.id}}" onclick="console.log(`{{this.id}}`)">View Todo</a>
+              </div>
               <br>
-              {{/each}}
+            {{/each}}
           </div>
         </div>
       </div>
     </section>
+
+    {{> footer }}
+
   </body>
 </html>

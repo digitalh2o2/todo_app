@@ -9,7 +9,7 @@
        <span></span>
      </div>
    </div>
-    {{#if user }}
+    {{#or user todos todo }}
       <div class="navbar-end navbar-menu">
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link" href="/user/profile">
@@ -42,6 +42,6 @@
           </div>
         </div>
       </div>
-    {{/if}}
+    {{/or}}
   <script type="text/javascript" src="/assets/toggle.js"></script>
 </nav>

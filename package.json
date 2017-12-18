@@ -21,6 +21,7 @@
     "cookie-parser": "^1.4.3",
     "express": "^4.16.2",
     "express-session": "^1.15.6",
+    "handlebars-helpers": "^0.10.0",
     "handlebars-intl": "^1.1.2",
     "hbs": "^4.0.1",
     "jsonwebtoken": "^7.1.9",
